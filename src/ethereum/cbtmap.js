@@ -7,6 +7,11 @@ const cbtmapAbi = [
 				"internalType": "uint256",
 				"name": "aadhar",
 				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "aadr",
+				"type": "address"
 			}
 		],
 		"name": "set",
@@ -32,12 +37,31 @@ const cbtmapAbi = [
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "aadhar",
+				"type": "uint256"
+			}
+		],
+		"name": "get",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
 	}
 ];
 
 const cbtmapContract = (provider) => {
     return new ethers.Contract(
-        "0x8D6F913b77682a96a4b53c65D4CBec50aA115501",
+        "0x69F70704e539d2CFf31845E186564081d41B3DBb",
         cbtmapAbi,
         provider
     );
