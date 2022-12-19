@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { ethers } from "ethers";
 import sbtContract from "./ethereum/sbt";
+import cbtmapContract from "./ethereum/cbtmap";
 import { create as ipfsHttpClient } from "ipfs-http-client";
 
 const projectId = '2IQSkxfdw8MFjp3naF8d63FXrzz';
@@ -15,6 +16,8 @@ function App() {
   const [SendSuccess, setSendSuccess] = useState("");
   const [SendError, setSendError] = useState("");
   const [TransactionData, setTransactionData] = useState();
+  const [CbtmapContract, setCbtmapContract] = useState();
+  const [mappedAddress, setAddress] = useState("");
 
   const [uploadedImages, setUploadedImages] = useState();
   const [Inputname, setName] = useState();
@@ -79,6 +82,7 @@ function App() {
         setSigner(provider.getSigner());
         /* local contract instance */
         setSbtContract(sbtContract(provider));
+        setCbtmapContract(cbtmapContract(provider));
         /* set active wallet address */
         setWalletAddress(accounts[0]);
       } catch (err) {
@@ -102,6 +106,7 @@ function App() {
           setSigner(provider.getSigner());
           /* local contract instance */
           setSbtContract(sbtContract(provider));
+          setCbtmapContract(cbtmapContract(provider));
           /* set active wallet address */
           setWalletAddress(accounts[0]);
         } else {
@@ -148,6 +153,27 @@ function App() {
     }
   };
 
+  const findAddress = async () => {
+    try {
+      const aadhar = Number(document.getElementById("aadhar").value);
+      const cbtwithsigner = CbtmapContract.connect(signer);
+      let resp = await cbtwithsigner.find(
+        aadhar
+      );
+      //resp = Boolean(resp);
+      console.log(resp);
+      if(!resp || resp){
+        const ans = await cbtwithsigner.get(
+          aadhar
+        );
+        console.log(ans);
+      }
+      document.getElementById("address").innerHTML = String(resp);
+    } catch (err) {
+      console.log(err.message);
+    }
+};
+
   return (
     <div>
       <nav className="navbar">
@@ -174,7 +200,21 @@ function App() {
           </div>
         </div>
       </nav>
+
       <section className="hero is-fullheight">
+      <div className="container has-text-centered main-content">
+      <label for="aadhar" class="custom-name">
+                  Enter Aadhar Card Number
+        </label>
+        <input type="text" id="aadhar" name="aadhar" />
+        <button className="button is-link is-medium" onClick={findAddress} disabled={walletAddress ? false : true}>Submit</button>
+        <br />
+            
+      </div>
+      <div className="container has-text-centered main-content">
+            {/* <h2 className="title is-1"></h2> */}
+            The mapped address is: <p id="address">{mappedAddress}</p>
+      </div>
         <div className="faucet-hero-body">
           <div className="container has-text-centered main-content">
             {/* <h2 className="title is-1"></h2> */}
